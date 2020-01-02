@@ -1,33 +1,76 @@
-## Spring boot dev-tools
+### Demo 2 : Spring MVC with thymeleaf templates
 
-The `devtools` bundle provide Live Dev Environment for application.
-Once application is RUN, make changes to source code and save them.
-Spring DevTools would simply re-launch itself to reflect those changes.
+1. Create a new Spring boot starter project
 
-How to add devTools ?
+    File > New > Others > Search for `Spring Starter Project`
 
-1. Right click on project > spring > Add DevTools
+2.  Enter following details:
 
-2. The first option is provided by eclipse plugin. Incase no plugin is installed,
-use following alternative.
+    ```yaml
+    Name:   demo-2
+    Type:   Maven
+    Packaging:  Jar
+    Java Version: 8
+    Language:   Java
 
-    Add a new dependency in POM.XML file
-
-    ```XML
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-devtools</artifactId>
-    </dependency>
+    Group:  com.mahendra
+    Artifact:   demo-2
+    Version:    1.0
+    Package:    com.mahendra.demo
     ```
 
-3.  Run the project again "Run As Spring Boot App"
-4.  Create additional request handling method in "HelloController" and check the server console.
+3.  Add new Dependency (starter-pom)
+
+    3.1 spring-web
+    3.2 thymeleaf
+
+4.  Create a new controller class `com.mahendra.demo.controllers.HelloController`
 
     ```java
-    @GetMapping("/{name}")
-	public String sayHello(@PathVariable("name") String name) {
-		return "Hello "+name;
-	}
+    @Controller
+    @RequestMapping("/")
+    public class HelloController {
+
+        @GetMapping
+        public String sayHello(Model map) {
+            map.addAttribute("user", "mahendra");
+            List<String> months
+                = Arrays.asList(new String[]{"Jan","Feb","Mar","Apr",
+                    "May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"});
+            map.addAttribute("months",months);
+            return "hello";
+        }
+    }
     ```
 
-5.  Test the method using web address http://localhost:8081/mahendra
+5.  Create a new HTML page inside `src\main\resources` with name `hello.html`
+
+    ```html
+    <!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+    <meta charset="ISO-8859-1">
+    <title>Hello MVC World!</title>
+    </head>
+    <body>
+    <h2>Hello <span th:text="${user}"></span></h2>
+    Choose month : <select name="month" th:field="*{months}">
+        <option th:each="month: ${months}" 
+            th:value="${month}"
+            th:text="${month}"
+        />
+    </select>
+    </body>
+    </html>
+    ```
+6.  Change the server port using `application.properties` file
+
+    ```yml
+    server.port=8081
+    ```
+
+7.  Run application as `Spring Boot App`
+
+8.  Test your application using web browser 
+    http://localhost:8081
